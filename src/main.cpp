@@ -17,6 +17,7 @@ typedef struct My2dObject{
     float dy;
     SDL_FRect rect;
     ColorRGBA color;
+    My2dObject(float _dx, float _dy, SDL_FRect _rect, ColorRGBA _color): dx(_dx), dy(_dy), rect(_rect), color(_color) {}
 } My2dObject;
 
 using std::vector;
@@ -33,21 +34,19 @@ int main() {
     SDL_Event e;
     const Uint8* keys;
 
-    vector<My2dObject> objs;
+    vector<My2dObject*> objs;
 
-    // SDL_Surface* surf = SDL_CreateSurface(200, 200, SDL_PIXELFORMAT_RGBA32);
-    // Uint32 surf_color = SDL_MapRGBA(surf->format, 255, 255, 0, 255);
-    // SDL_FillSurfaceRect(surf, NULL, surf_color);
-
-    SDL_FRect r = {0.f, 0.f, 100.f, 100.f};
+    SDL_FRect r1 = {0.f, 0.f, 100.f, 100.f};
     ColorRGBA obj1_color = {255, 255, 0, 255};
-    My2dObject obj1 = {0, 0, r, obj1_color};
+    My2dObject* obj1 = new My2dObject(0, 0, r1, obj1_color);
     objs.push_back(obj1);
 
-    r = {200.f, 200.f, 150.f, 500.f};
+    SDL_FRect r2 = {200.f, 200.f, 150.f, 500.f};
     ColorRGBA obj2_color = {0, 0, 255, 255};
-    My2dObject obj2 = {0, 0, r, obj2_color};
+    My2dObject* obj2 = new My2dObject(0.5, 0, r2, obj2_color);
     objs.push_back(obj2);
+
+    My2dObject* player = objs[0];
 
     bool running = true;
     while (running) {
@@ -67,12 +66,35 @@ int main() {
                 break;
         }
 
-        for (const My2dObject& o : objs) {
-            SDL_SetRenderDrawColor(renderer, o.color.r, o.color.g, o.color.b, o.color.a);
-            SDL_RenderFillRect(renderer, &o.rect);
+        if (keys[SDL_SCANCODE_W]) {
+            player->dy = -1;
+        } else if (keys[SDL_SCANCODE_S]) {
+            player->dy = 1;
+        } else {
+            player->dy = 0;
         }
 
+        if (keys[SDL_SCANCODE_A]) {
+            player->dx = -1;
+        } else if (keys[SDL_SCANCODE_D]) {
+            player->dx = 1;
+        } else {
+            player->dx = 0;
+        }
+
+        // moving 2d rects
+        for (My2dObject* o : objs) {
+            o->rect.x += o->dx;
+            o->rect.y += o->dy;
+        }
+
+        for (const My2dObject* o : objs) {
+            SDL_SetRenderDrawColor(renderer, o->color.r, o->color.g, o->color.b, o->color.a);
+            SDL_RenderFillRect(renderer, &o->rect);
+        }
         SDL_RenderPresent(renderer);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
