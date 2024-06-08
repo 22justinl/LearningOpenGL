@@ -1,0 +1,36 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-c",
+      "-std=c++20",
+      "-I",
+      "include",
+      "-I/usr/local/lib/pkgconfig/../../include",
+      "-Iinclude/glad/include",
+      "-o",
+      "build/main",
+      "src/main.cpp"
+    ],
+    "directory": "/Users/22justinl/Desktop/Test/Test/C++/sdl/test",
+    "file": "/Users/22justinl/Desktop/Test/Test/C++/sdl/test/src/main.cpp",
+    "output": "/Users/22justinl/Desktop/Test/Test/C++/sdl/test/build/main"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-c",
+      "-std=c++20",
+      "-I",
+      "include",
+      "-I/usr/local/lib/pkgconfig/../../include",
+      "-Iinclude/glad/include",
+      "-o",
+      "build/main",
+      "include/glad/src/glad.c"
+    ],
+    "directory": "/Users/22justinl/Desktop/Test/Test/C++/sdl/test",
+    "file": "/Users/22justinl/Desktop/Test/Test/C++/sdl/test/include/glad/src/glad.c",
+    "output": "/Users/22justinl/Desktop/Test/Test/C++/sdl/test/build/main"
+  }
+]
