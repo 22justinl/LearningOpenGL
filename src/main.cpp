@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include "utils.hpp"
-#include "camera.h"
+#include "camera.hpp"
 
 #define SCREEN_WIDTH    1280
 #define SCREEN_HEIGHT   720
@@ -42,12 +42,15 @@ void Initialize(SDL_Window*& window, SDL_GLContext& glcontext) {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
         exit(1);
     }
-    SDL_GL_SetSwapInterval(1);
-
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
+
+    SDL_GL_SetSwapInterval(1);
+
+    SDL_SetRelativeMouseMode(true);
 }
 
 void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fsspath) {
@@ -73,6 +76,7 @@ void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fs
     glValidateProgram(program);
 }
 
+// NOTE: RIGHT HANDED COORDS (+x right, +y up, -z into screen)
 int main() {
     SDL_Window* window;
     SDL_GLContext glcontext;
@@ -91,6 +95,7 @@ int main() {
 
     std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
                                                 1, 2, 3};
+    
     GLuint squareVertexCount = squareVertexIndices.size();
 
     // access data
@@ -129,13 +134,26 @@ int main() {
 
     SDL_Event e;
     const Uint8* keys;
+    float mouseX, mouseY;
+
+    Camera camera;
+
+    glm::mat4 u_cameraViewMatrix;
+    GLuint u_cameraViewMatrixLoc = glGetUniformLocation(program, "u_cameraViewMatrix");
+    if (u_cameraViewMatrixLoc < 0) {
+        std::cout << "u_cameraViewMatrix location not found" << std::endl;
+    }
+
     bool quit = false;
     while (!quit) {
-        if (SDL_PollEvent(&e) != 0) {
+        while (SDL_PollEvent(&e) != 0) {
             switch (e.type) {
                 case SDL_EVENT_QUIT:
                     quit = true;
                     std::cout << "Quit" << std::endl;
+                    break;
+                case SDL_EVENT_MOUSE_MOTION:
+                    camera.MouseTurn(e.motion.xrel, e.motion.yrel);
                     break;
             }
         }
@@ -145,6 +163,28 @@ int main() {
                 std::cout << "Quit" << std::endl;
                 break;
         }
+
+        if (keys[SDL_SCANCODE_W]) {
+            camera.MoveForward();
+        }
+        if (keys[SDL_SCANCODE_S]) {
+            camera.MoveBackward();
+        }
+        if (keys[SDL_SCANCODE_D]) {
+            camera.MoveRight();
+        }
+        if (keys[SDL_SCANCODE_A]) {
+            camera.MoveLeft();
+        }
+        if (keys[SDL_SCANCODE_SPACE]) {
+            camera.MoveUp();
+        }
+        if (keys[SDL_SCANCODE_LSHIFT]) {
+            camera.MoveDown();
+        }
+
+        u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 10.f) * camera.ViewMatrix();
+        glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
@@ -166,8 +206,6 @@ int main() {
     SDL_DestroyWindow(window);
 
     SDL_Quit();
-    return 0;
-
     return 0;
 }
 
