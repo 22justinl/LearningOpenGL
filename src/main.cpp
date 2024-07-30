@@ -13,45 +13,9 @@
 
 #include <iostream>
 
-#include "utils.hpp"
+#include "app.hpp"
 #include "camera.hpp"
-
-#define SCREEN_WIDTH    1280
-#define SCREEN_HEIGHT   720
-
-void Initialize(SDL_Window*& window, SDL_GLContext& glcontext) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        std::cout << "Failed to initialize SDL" << std::endl;
-        exit(1);
-    }
-    
-    // Use OpenGL version 4.1
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-    // Create window and OpenGL context
-    window = SDL_CreateWindow("window", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
-    glcontext = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, glcontext);
-    
-    if (!SDL_GL_GetCurrentContext() || !gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
-        std::cout << "Failed to initialize OpenGL context" << std::endl;
-        exit(1);
-    }
-    std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
-    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
-
-    SDL_GL_SetSwapInterval(1);
-
-    SDL_SetRelativeMouseMode(true);
-}
+#include "utils.hpp"
 
 void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fsspath) {
     program = glCreateProgram();
@@ -78,23 +42,31 @@ void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fs
 
 // NOTE: RIGHT HANDED COORDS (+x right, +y up, -z into screen)
 int main() {
-    SDL_Window* window;
-    SDL_GLContext glcontext;
-    Initialize(window, glcontext);
+    App app;
 
     // setup square
     std::vector<GLfloat> squareVertexPos =     {-0.5f   , -0.5f , 0.0f,
                                                 0.5f    , -0.5f , 0.0f,
                                                 0.5f    , 0.5f  , 0.0f,
-                                                -0.5f   , 0.5f  , 0.0f};
+                                                -0.5f   , 0.5f  , 0.0f,
+                                                -0.5f   , -0.5f , -2.0f,
+                                                0.5f    , -0.5f , -2.0f,
+                                                0.5f    , 0.5f  , -2.0f,
+                                                -0.5f   , 0.5f  , -2.0f};
 
     std::vector<GLfloat> squareVertexCol =     {1.0f    , 0.0f  , 0.0f,
+                                                0.0f    , 1.0f  , 0.0f,
+                                                0.0f    , 0.0f  , 1.0f,
+                                                0.0f    , 0.0f  , 1.0f,
+                                                1.0f    , 0.0f  , 0.0f,
                                                 0.0f    , 1.0f  , 0.0f,
                                                 0.0f    , 0.0f  , 1.0f,
                                                 0.0f    , 0.0f  , 1.0f};
 
     std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
-                                                1, 2, 3};
+                                                1, 2, 3,
+                                                4, 5, 7,
+                                                5, 6, 7};
     
     GLuint squareVertexCount = squareVertexIndices.size();
 
@@ -132,17 +104,24 @@ int main() {
     GLuint program;
     CreateGraphicsPipeline(program, "shaders/vertexshader.glsl", "shaders/fragshader.glsl");
 
+    SDL_Window* window = app.window();
     SDL_Event e;
     const Uint8* keys;
     float mouseX, mouseY;
 
     Camera camera;
 
+
     glm::mat4 u_cameraViewMatrix;
     GLuint u_cameraViewMatrixLoc = glGetUniformLocation(program, "u_cameraViewMatrix");
     if (u_cameraViewMatrixLoc < 0) {
         std::cout << "u_cameraViewMatrix location not found" << std::endl;
     }
+
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glViewport(0, 0, app.screenWidth(), app.screenHeight());
+    glUseProgram(program);
 
     bool quit = false;
     while (!quit) {
@@ -183,17 +162,11 @@ int main() {
             camera.MoveDown();
         }
 
-        u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 10.f) * camera.ViewMatrix();
+        u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)app.screenWidth()/(float)app.screenHeight(), 0.1f, 10.f) * camera.ViewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-
-        glViewport(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-        glUseProgram(program);
 
         glBindVertexArray(vao);
 
@@ -202,7 +175,7 @@ int main() {
         SDL_GL_SwapWindow(window);
     }
 
-    SDL_GL_DeleteContext(glcontext);
+    SDL_GL_DeleteContext(app.glcontext());
     SDL_DestroyWindow(window);
 
     SDL_Quit();
