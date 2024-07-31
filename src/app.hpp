@@ -14,7 +14,7 @@ public:
     SDL_Window* window() const { return m_window; };
     SDL_GLContext glcontext() const { return m_glcontext; };
 
-    void Exit();
+    void exitApp();
     ~App();
 private:
     SDL_Window* m_window;

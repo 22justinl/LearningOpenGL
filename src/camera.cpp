@@ -4,37 +4,37 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
-Camera::Camera(): eye(0, 0, 0), viewDirection(0, 0, -1), up(0, 1, 0) {}
+Camera::Camera(): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0) {}
 
-glm::mat4 Camera::ViewMatrix() const {
-    return glm::lookAt(eye, eye + viewDirection, up);
+glm::mat4 Camera::viewMatrix() const {
+    return glm::lookAt(m_eye, m_eye + m_viewDirection, m_up);
 }
 
-void Camera::MouseTurn(float relX, float relY) {
-    viewDirection = glm::rotate(viewDirection, glm::radians(-relY * sensitivity), glm::cross(viewDirection, up));
-    viewDirection = glm::rotate(viewDirection, glm::radians(-relX * sensitivity), up);
+void Camera::mouseTurn(float relX, float relY) {
+    m_viewDirection = glm::rotate(m_viewDirection, glm::radians(-relY * m_sensitivity), glm::cross(m_viewDirection, m_up));
+    m_viewDirection = glm::rotate(m_viewDirection, glm::radians(-relX * m_sensitivity), m_up);
 }
 
-void Camera::MoveForward() {
-    eye += viewDirection * speed;
+void Camera::moveForward() {
+    m_eye += m_viewDirection * m_speed;
 }
 
-void Camera::MoveBackward() {
-    eye -= viewDirection * speed;
+void Camera::moveBackward() {
+    m_eye -= m_viewDirection * m_speed;
 }
 
-void Camera::MoveRight() {
-    eye += glm::normalize(glm::cross(viewDirection, up)) * speed;
+void Camera::moveRight() {
+    m_eye += glm::normalize(glm::cross(m_viewDirection, m_up)) * m_speed;
 }
 
-void Camera::MoveLeft() {
-    eye -= glm::normalize(glm::cross(viewDirection, up)) * speed;
+void Camera::moveLeft() {
+    m_eye -= glm::normalize(glm::cross(m_viewDirection, m_up)) * m_speed;
 }
 
-void Camera::MoveUp() {
-    eye += up * speed;
+void Camera::moveUp() {
+    m_eye += m_up * m_speed;
 }
 
-void Camera::MoveDown() {
-    eye -= up * speed;
+void Camera::moveDown() {
+    m_eye -= m_up * m_speed;
 }

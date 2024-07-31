@@ -36,7 +36,8 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     SDL_SetRelativeMouseMode(true);
 }
 
-void App::Exit() {
+void App::exitApp() {
+    std::cout << "Bye!" << std::endl;
     SDL_GL_DeleteContext(glcontext());
     SDL_DestroyWindow(m_window);
 
@@ -45,5 +46,5 @@ void App::Exit() {
 }
 
 App::~App() {
-    Exit();
+    exitApp();
 }

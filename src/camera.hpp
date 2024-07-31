@@ -6,23 +6,23 @@ class Camera {
 public:
     Camera();
 
-    glm::mat4 ViewMatrix() const;
+    glm::mat4 viewMatrix() const;
 
-    void MouseTurn(float relX, float relY);
+    void mouseTurn(float relX, float relY);
 
-    void MoveForward();
-    void MoveBackward();
+    void moveForward();
+    void moveBackward();
 
-    void MoveRight();
-    void MoveLeft();
+    void moveRight();
+    void moveLeft();
 
-    void MoveUp();
-    void MoveDown();
+    void moveUp();
+    void moveDown();
 private:
-    glm::vec3 eye;              // position
-    glm::vec3 up;               // direction of up
-    glm::vec3 viewDirection;    // eye + viewDirection = center
+    glm::vec3 m_eye;              // position
+    glm::vec3 m_up;               // direction of up
+    glm::vec3 m_viewDirection;    // eye + viewDirection = center
 
-    float sensitivity = 0.1;
-    float speed = 0.1;
+    float m_sensitivity = 0.1;
+    float m_speed = 0.1;
 };

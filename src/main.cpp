@@ -45,10 +45,10 @@ int main() {
     App app;
 
     // setup square
-    std::vector<GLfloat> squareVertexPos =     {-0.5f   , -0.5f , 0.0f,
-                                                0.5f    , -0.5f , 0.0f,
-                                                0.5f    , 0.5f  , 0.0f,
-                                                -0.5f   , 0.5f  , 0.0f,
+    std::vector<GLfloat> squareVertexPos =     {-0.5f   , -0.5f , -1.0f,
+                                                0.5f    , -0.5f , -1.0f,
+                                                0.5f    , 0.5f  , -1.0f,
+                                                -0.5f   , 0.5f  , -1.0f,
                                                 -0.5f   , -0.5f , -2.0f,
                                                 0.5f    , -0.5f , -2.0f,
                                                 0.5f    , 0.5f  , -2.0f,
@@ -63,10 +63,24 @@ int main() {
                                                 0.0f    , 0.0f  , 1.0f,
                                                 0.0f    , 0.0f  , 1.0f};
 
+    // std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
+    //                                             1, 2, 3,
+    //                                             4, 5, 7,
+    //                                             5, 6, 7};
+
     std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
                                                 1, 2, 3,
-                                                4, 5, 7,
-                                                5, 6, 7};
+                                                1, 2, 5,
+                                                5, 6, 2,
+                                                3, 2, 7,
+                                                2, 6, 7,
+                                                2, 6, 7,
+                                                0, 1, 4,
+                                                1, 5, 4,
+                                                5, 4, 6,
+                                                4, 6, 7,
+                                                4, 0, 7,
+                                                0, 7, 3};
     
     GLuint squareVertexCount = squareVertexIndices.size();
 
@@ -132,7 +146,7 @@ int main() {
                     std::cout << "Quit" << std::endl;
                     break;
                 case SDL_EVENT_MOUSE_MOTION:
-                    camera.MouseTurn(e.motion.xrel, e.motion.yrel);
+                    camera.mouseTurn(e.motion.xrel, e.motion.yrel);
                     break;
             }
         }
@@ -144,25 +158,25 @@ int main() {
         }
 
         if (keys[SDL_SCANCODE_W]) {
-            camera.MoveForward();
+            camera.moveForward();
         }
         if (keys[SDL_SCANCODE_S]) {
-            camera.MoveBackward();
+            camera.moveBackward();
         }
         if (keys[SDL_SCANCODE_D]) {
-            camera.MoveRight();
+            camera.moveRight();
         }
         if (keys[SDL_SCANCODE_A]) {
-            camera.MoveLeft();
+            camera.moveLeft();
         }
         if (keys[SDL_SCANCODE_SPACE]) {
-            camera.MoveUp();
+            camera.moveUp();
         }
         if (keys[SDL_SCANCODE_LSHIFT]) {
-            camera.MoveDown();
+            camera.moveDown();
         }
 
-        u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)app.screenWidth()/(float)app.screenHeight(), 0.1f, 10.f) * camera.ViewMatrix();
+        u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)app.screenWidth()/(float)app.screenHeight(), 0.1f, 10.f) * camera.viewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -175,10 +189,6 @@ int main() {
         SDL_GL_SwapWindow(window);
     }
 
-    SDL_GL_DeleteContext(app.glcontext());
-    SDL_DestroyWindow(window);
-
-    SDL_Quit();
     return 0;
 }
 
