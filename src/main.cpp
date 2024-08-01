@@ -44,8 +44,8 @@ void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fs
 int main() {
     App app;
 
-    // setup square
-    std::vector<GLfloat> squareVertexPos =     {-0.5f   , -0.5f , -1.0f,
+    // setup cube
+    std::vector<GLfloat> cubeVertexPos =     {-0.5f   , -0.5f , -1.0f,
                                                 0.5f    , -0.5f , -1.0f,
                                                 0.5f    , 0.5f  , -1.0f,
                                                 -0.5f   , 0.5f  , -1.0f,
@@ -54,7 +54,7 @@ int main() {
                                                 0.5f    , 0.5f  , -2.0f,
                                                 -0.5f   , 0.5f  , -2.0f};
 
-    std::vector<GLfloat> squareVertexCol =     {1.0f    , 0.0f  , 0.0f,
+    std::vector<GLfloat> cubeVertexCol =     {1.0f    , 0.0f  , 0.0f,
                                                 0.0f    , 1.0f  , 0.0f,
                                                 0.0f    , 0.0f  , 1.0f,
                                                 0.0f    , 0.0f  , 1.0f,
@@ -63,7 +63,7 @@ int main() {
                                                 0.0f    , 0.0f  , 1.0f,
                                                 0.0f    , 0.0f  , 1.0f};
 
-    std::vector<GLfloat> squareVertexPosCol =  {-0.5f   , -0.5f , -1.0f,
+    std::vector<GLfloat> cubeVertexPosCol =  {-0.5f   , -0.5f , -1.0f,
                                                 1.0f    , 0.0f  , 0.0f,
 
                                                 0.5f    , -0.5f , -1.0f,
@@ -87,7 +87,7 @@ int main() {
                                                 -0.5f   , 0.5f  , -2.0f,
                                                 0.0f    , 0.0f  , 1.0f};
 
-    std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
+    std::vector<GLuint> cubeVertexIndices =  {0, 1, 3,
                                                 1, 2, 3,
                                                 1, 2, 5,
                                                 5, 6, 2,
@@ -101,7 +101,7 @@ int main() {
                                                 4, 0, 7,
                                                 0, 7, 3};
     
-    GLuint squareVertexCount = squareVertexIndices.size();
+    GLuint cubeVertexCount = cubeVertexIndices.size();
 
     // access data
     GLuint vao;
@@ -115,7 +115,7 @@ int main() {
     // Vertex Buffer Object
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, squareVertexPosCol.size() * sizeof(GLfloat), squareVertexPosCol.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, cubeVertexPosCol.size() * sizeof(GLfloat), cubeVertexPosCol.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(1);
@@ -123,7 +123,7 @@ int main() {
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, squareVertexIndices.size() * sizeof(GLuint), squareVertexIndices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeVertexIndices.size() * sizeof(GLuint), cubeVertexIndices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
@@ -138,7 +138,6 @@ int main() {
     float mouseX, mouseY;
 
     Camera camera;
-
 
     glm::mat4 u_cameraViewMatrix;
     GLuint u_cameraViewMatrixLoc = glGetUniformLocation(program, "u_cameraViewMatrix");
@@ -198,7 +197,7 @@ int main() {
 
         glBindVertexArray(vao);
 
-        glDrawElements(GL_TRIANGLES, squareVertexCount, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
 
         SDL_GL_SwapWindow(window);
     }
