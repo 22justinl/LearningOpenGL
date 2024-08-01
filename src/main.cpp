@@ -103,7 +103,6 @@ int main() {
     
     GLuint cubeVertexCount = cubeVertexIndices.size();
 
-    // access data
     GLuint vao;
     GLuint vbo;
     GLuint ibo;
@@ -129,66 +128,32 @@ int main() {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
+    // TODO: New class?
     GLuint program;
     CreateGraphicsPipeline(program, "shaders/vertexshader.glsl", "shaders/fragshader.glsl");
 
-    SDL_Window* window = app.window();
-    SDL_Event e;
-    const Uint8* keys;
-    float mouseX, mouseY;
-
     Camera camera;
+    app.setCamera(&camera);
 
+    // Uniforms
     glm::mat4 u_cameraViewMatrix;
     GLuint u_cameraViewMatrixLoc = glGetUniformLocation(program, "u_cameraViewMatrix");
     if (u_cameraViewMatrixLoc < 0) {
         std::cout << "u_cameraViewMatrix location not found" << std::endl;
     }
 
+    // Setup
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glViewport(0, 0, app.screenWidth(), app.screenHeight());
     glUseProgram(program);
 
+    // Main loop
     bool quit = false;
     while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-            switch (e.type) {
-                case SDL_EVENT_QUIT:
-                    quit = true;
-                    std::cout << "Quit" << std::endl;
-                    break;
-                case SDL_EVENT_MOUSE_MOTION:
-                    camera.mouseTurn(e.motion.xrel, e.motion.yrel);
-                    break;
-            }
-        }
-        keys = SDL_GetKeyboardState(NULL);
-        if (keys[SDL_SCANCODE_ESCAPE]) {
-                quit = true;
-                std::cout << "Quit" << std::endl;
-                break;
-        }
+        quit = app.inputManager()->handleEvents();
 
-        if (keys[SDL_SCANCODE_W]) {
-            camera.moveForward();
-        }
-        if (keys[SDL_SCANCODE_S]) {
-            camera.moveBackward();
-        }
-        if (keys[SDL_SCANCODE_D]) {
-            camera.moveRight();
-        }
-        if (keys[SDL_SCANCODE_A]) {
-            camera.moveLeft();
-        }
-        if (keys[SDL_SCANCODE_SPACE]) {
-            camera.moveUp();
-        }
-        if (keys[SDL_SCANCODE_LSHIFT]) {
-            camera.moveDown();
-        }
-
+        // TODO: Move to Camera (option to choose different args and orthogonal/perspective)
         u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)app.screenWidth()/(float)app.screenHeight(), 0.1f, 10.f) * camera.viewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
@@ -198,10 +163,8 @@ int main() {
         glBindVertexArray(vao);
 
         glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
-
-        SDL_GL_SwapWindow(window);
+        SDL_GL_SwapWindow(app.window());
     }
 
     return 0;
 }
-

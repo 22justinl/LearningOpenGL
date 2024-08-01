@@ -4,7 +4,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
-Camera::Camera(): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0) {}
+Camera::Camera(): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0) {
+
+}
 
 glm::mat4 Camera::viewMatrix() const {
     return glm::lookAt(m_eye, m_eye + m_viewDirection, m_up);

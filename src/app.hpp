@@ -4,21 +4,33 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
+#include "camera.hpp"
+#include "inputmanager.hpp"
+
 class App {
 public:
     App(unsigned int w = 1280, unsigned int h = 720);
 
-    unsigned int screenWidth() const { return m_screenWidth; };
-    unsigned int screenHeight() const { return m_screenHeight; };
+    SDL_Window* window() const;
+    SDL_GLContext glcontext() const;
 
-    SDL_Window* window() const { return m_window; };
-    SDL_GLContext glcontext() const { return m_glcontext; };
+    InputManager* inputManager() const;
+
+    Camera* camera() const;
+    void setCamera(Camera* c);
+
+    unsigned int screenWidth() const;
+    unsigned int screenHeight() const;
 
     void exitApp();
     ~App();
 private:
     SDL_Window* m_window;
     SDL_GLContext m_glcontext;
+
+    InputManager* m_inputManager;
+
+    Camera* m_camera;
 
     unsigned int m_screenWidth;
     unsigned int m_screenHeight;

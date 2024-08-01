@@ -34,6 +34,37 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     SDL_GL_SetSwapInterval(1);
 
     SDL_SetRelativeMouseMode(true);
+
+    m_inputManager = new InputManager();
+}
+
+SDL_Window* App::window() const {
+    return m_window;
+}
+
+SDL_GLContext App::glcontext() const {
+    return m_glcontext;
+}
+
+InputManager* App::inputManager() const {
+    return m_inputManager;
+}
+
+Camera* App::camera() const {
+    return m_camera;
+}
+
+void App::setCamera(Camera* c) {
+    m_camera = c;
+    inputManager()->setCamera(c);
+}
+
+unsigned int App::screenWidth() const {
+    return m_screenWidth;
+}
+
+unsigned int App::screenHeight() const {
+    return m_screenHeight;
 }
 
 void App::exitApp() {
@@ -46,5 +77,6 @@ void App::exitApp() {
 }
 
 App::~App() {
+    delete m_inputManager;
     exitApp();
 }
