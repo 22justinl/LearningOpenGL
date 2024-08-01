@@ -63,10 +63,29 @@ int main() {
                                                 0.0f    , 0.0f  , 1.0f,
                                                 0.0f    , 0.0f  , 1.0f};
 
-    // std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
-    //                                             1, 2, 3,
-    //                                             4, 5, 7,
-    //                                             5, 6, 7};
+    std::vector<GLfloat> squareVertexPosCol =  {-0.5f   , -0.5f , -1.0f,
+                                                1.0f    , 0.0f  , 0.0f,
+
+                                                0.5f    , -0.5f , -1.0f,
+                                                0.0f    , 1.0f  , 0.0f,
+
+                                                0.5f    , 0.5f  , -1.0f,
+                                                0.0f    , 0.0f  , 1.0f,
+
+                                                -0.5f   , 0.5f  , -1.0f,
+                                                0.0f    , 0.0f  , 1.0f,
+
+                                                -0.5f   , -0.5f , -2.0f,
+                                                1.0f    , 0.0f  , 0.0f,
+
+                                                0.5f    , -0.5f , -2.0f,
+                                                0.0f    , 1.0f  , 0.0f,
+
+                                                0.5f    , 0.5f  , -2.0f,
+                                                0.0f    , 0.0f  , 1.0f,
+
+                                                -0.5f   , 0.5f  , -2.0f,
+                                                0.0f    , 0.0f  , 1.0f};
 
     std::vector<GLuint> squareVertexIndices =  {0, 1, 3,
                                                 1, 2, 3,
@@ -86,8 +105,7 @@ int main() {
 
     // access data
     GLuint vao;
-    GLuint vbo_pos;
-    GLuint vbo_col;
+    GLuint vbo;
     GLuint ibo;
 
     // Vertex Array Object
@@ -95,17 +113,13 @@ int main() {
     glBindVertexArray(vao);
 
     // Vertex Buffer Object
-    glGenBuffers(1, &vbo_pos);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_pos);
-    glBufferData(GL_ARRAY_BUFFER, squareVertexPos.size() * sizeof(GLfloat), squareVertexPos.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, squareVertexPosCol.size() * sizeof(GLfloat), squareVertexPosCol.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-
-    glGenBuffers(1, &vbo_col);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_col);
-    glBufferData(GL_ARRAY_BUFFER, squareVertexCol.size() * sizeof(GLfloat), squareVertexCol.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
