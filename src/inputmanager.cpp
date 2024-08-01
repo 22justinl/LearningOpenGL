@@ -51,5 +51,11 @@ bool InputManager::handleEvents() {
     if (m_keys[SDL_SCANCODE_LSHIFT]) {
         camera()->moveDown();
     }
+    if (m_keys[SDL_SCANCODE_P]) {
+        camera()->setPerspectiveMode();
+    }
+    if (m_keys[SDL_SCANCODE_O]) {
+        camera()->setOrthogonalMode();
+    }
     return false;
 }

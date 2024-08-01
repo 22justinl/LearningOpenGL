@@ -4,12 +4,37 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
-Camera::Camera(): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0) {
-
+Camera::Camera(unsigned int w, unsigned int h): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0), m_screenWidth(w), m_screenHeight(h) {
+    // Default
+    ProjectionMode p = {true, glm::radians(45.f), (float)w/(float)h, 0, 0, 0, 0, 0.1f, 10.f};
+    setProjectionMode(p);
 }
 
 glm::mat4 Camera::viewMatrix() const {
     return glm::lookAt(m_eye, m_eye + m_viewDirection, m_up);
+}
+
+glm::mat4 Camera::projectionMatrix() const {
+    return m_projectionMatrix;
+}
+
+void Camera::setProjectionMode(ProjectionMode p) {
+    m_projectionMode = p;
+    if (p.perspective) {
+        m_projectionMatrix = glm::perspective(p.fovy, p.aspect, p.zNear, p.zFar);
+    } else {
+        m_projectionMatrix = glm::ortho(p.left, p.right, p.bottom, p.top, p.zNear, p.zFar);
+    }
+}
+
+void Camera::setPerspectiveMode() {
+    Camera::ProjectionMode persp = {true, glm::radians(45.f), (float)m_screenWidth/(float)m_screenHeight, 0, 0, 0, 0, 0.1f, 10.f};
+    setProjectionMode(persp);
+}
+
+void Camera::setOrthogonalMode() {
+    Camera::ProjectionMode ortho = {false, 0, 0, -4, 4, -4, 4, 0.1f, 10.f};
+    setProjectionMode(ortho);
 }
 
 void Camera::mouseTurn(float relX, float relY) {
@@ -40,3 +65,5 @@ void Camera::moveUp() {
 void Camera::moveDown() {
     m_eye -= m_up * m_speed;
 }
+
+// glm::mat4 glm::ortho(float left, float right, float bottom, float top, float zNear, float zFar);

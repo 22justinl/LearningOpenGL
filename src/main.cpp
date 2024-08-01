@@ -132,9 +132,6 @@ int main() {
     GLuint program;
     CreateGraphicsPipeline(program, "shaders/vertexshader.glsl", "shaders/fragshader.glsl");
 
-    Camera camera;
-    app.setCamera(&camera);
-
     // Uniforms
     glm::mat4 u_cameraViewMatrix;
     GLuint u_cameraViewMatrixLoc = glGetUniformLocation(program, "u_cameraViewMatrix");
@@ -153,8 +150,7 @@ int main() {
     while (!quit) {
         quit = app.inputManager()->handleEvents();
 
-        // TODO: Move to Camera (option to choose different args and orthogonal/perspective)
-        u_cameraViewMatrix = glm::perspective(glm::radians(45.f), (float)app.screenWidth()/(float)app.screenHeight(), 0.1f, 10.f) * camera.viewMatrix();
+        u_cameraViewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

@@ -36,6 +36,8 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     SDL_SetRelativeMouseMode(true);
 
     m_inputManager = new InputManager();
+    Camera* c = new Camera(screenWidth(), screenHeight());
+    setCamera(c);
 }
 
 SDL_Window* App::window() const {
@@ -78,5 +80,6 @@ void App::exitApp() {
 
 App::~App() {
     delete m_inputManager;
+    delete m_camera;
     exitApp();
 }
