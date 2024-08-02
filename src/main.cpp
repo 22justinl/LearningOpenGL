@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <chrono>
 
 #include <iostream>
 
@@ -140,27 +141,40 @@ int main() {
     }
 
     // Setup
+    glBindVertexArray(vao);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glViewport(0, 0, app.screenWidth(), app.screenHeight());
     glUseProgram(program);
 
+    // FPS Counter Init
+    unsigned int frames = 0;
+    std::vector<double> fps_acc;
+    auto startTime = std::chrono::steady_clock::now();
+
     // Main loop
     bool quit = false;
     while (!quit) {
-        quit = app.inputManager()->handleEvents();
+        fps_counter(frames, startTime, fps_acc);
 
         u_cameraViewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-        glBindVertexArray(vao);
 
         glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
         SDL_GL_SwapWindow(app.window());
+
+        quit = app.inputManager()->handleEvents();
     }
+
+    double fps_avg = 0;
+    for (double fps : fps_acc) {
+        fps_avg += fps/(double)fps_acc.size();
+    }
+    std::cout << "Average fps: " << fps_avg << std::endl;
 
     return 0;
 }
+

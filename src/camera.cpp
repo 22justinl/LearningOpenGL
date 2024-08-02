@@ -65,5 +65,3 @@ void Camera::moveUp() {
 void Camera::moveDown() {
     m_eye -= m_up * m_speed;
 }
-
-// glm::mat4 glm::ortho(float left, float right, float bottom, float top, float zNear, float zFar);

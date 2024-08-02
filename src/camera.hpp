@@ -53,5 +53,5 @@ private:
     unsigned int m_screenHeight;
 
     float m_sensitivity = 0.1;
-    float m_speed = 0.1;
+    float m_speed = 0.001;
 };
