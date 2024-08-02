@@ -8,6 +8,10 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
         exit(1);
     }
 
+    if (FT_Init_FreeType(&m_library)) {
+        std::cout << "Failed to initialize FreeType" << std::endl;
+    }
+    
     // Use OpenGL version 4.1
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);

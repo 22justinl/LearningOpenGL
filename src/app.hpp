@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "camera.hpp"
 #include "inputmanager.hpp"
@@ -27,6 +29,7 @@ public:
 private:
     SDL_Window* m_window;
     SDL_GLContext m_glcontext;
+    FT_Library m_library;
 
     InputManager* m_inputManager;
 
