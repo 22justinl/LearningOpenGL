@@ -7,7 +7,7 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
         std::cout << "Failed to initialize SDL" << std::endl;
         exit(1);
     }
-    
+
     // Use OpenGL version 4.1
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -31,7 +31,7 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    SDL_GL_SetSwapInterval(1);
+    // SDL_GL_SetSwapInterval(1);
 
     SDL_SetRelativeMouseMode(true);
 

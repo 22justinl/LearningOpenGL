@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <chrono>
 
 #include <iostream>
 
@@ -140,26 +141,36 @@ int main() {
     }
 
     // Setup
+    glBindVertexArray(vao);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glViewport(0, 0, app.screenWidth(), app.screenHeight());
     glUseProgram(program);
 
+    // FPS Counter Init
+    int frames = 0;
+    auto startTime = std::chrono::steady_clock::now();
+
     // Main loop
     bool quit = false;
     while (!quit) {
-        quit = app.inputManager()->handleEvents();
-
+        if (std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime) >= std::chrono::duration<double>(0.25)) {
+            std::cout << std::chrono::duration<double>(frames) / std::chrono::duration<double>(std::chrono::steady_clock::now() - startTime) << std::endl;
+            startTime = std::chrono::steady_clock::now();
+            frames = 0;
+        } else {
+            frames++;
+        }
         u_cameraViewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-        glBindVertexArray(vao);
 
         glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
         SDL_GL_SwapWindow(app.window());
+
+        quit = app.inputManager()->handleEvents();
     }
 
     return 0;
