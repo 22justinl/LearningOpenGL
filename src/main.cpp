@@ -161,7 +161,6 @@ int main() {
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
         app.renderer()->draw();
-
         glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
         SDL_GL_SwapWindow(app.window());
 

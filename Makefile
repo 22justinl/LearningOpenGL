@@ -7,8 +7,8 @@ LIB_DIR = lib
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 
-CPP_FLAGS = $(SRC_FILES) -I $(INC_DIR)
 OUTPUT_FLAG = -o $(BUILD_DIR)/main
+CPP_FLAGS = $(SRC_FILES) -o $(BUILD_DIR)/main -I $(INC_DIR)
 LIBRARY_FLAGS = `pkg-config sdl3 --cflags --libs`
 OPENGL_FLAGS = -lGL
 GLAD_FLAGS = include/glad/src/glad.c -Iinclude/glad/include
