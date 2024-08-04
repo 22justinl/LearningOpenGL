@@ -4,6 +4,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
+#include <iostream>
+
 Camera::Camera(unsigned int w, unsigned int h): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0), m_screenWidth(w), m_screenHeight(h) {
     // Default
     ProjectionMode p = {true, glm::radians(45.f), (float)w/(float)h, 0, 0, 0, 0, 0.1f, 10.f};
@@ -38,8 +40,12 @@ void Camera::setOrthogonalMode() {
 }
 
 void Camera::mouseTurn(float relX, float relY) {
-    m_viewDirection = glm::rotate(m_viewDirection, glm::radians(-relY * m_sensitivity), glm::cross(m_viewDirection, m_up));
+    if (    (m_viewDirection[1] > 0.98 && relY < 0) || 
+            (m_viewDirection[1] < -0.98 && relY > 0)) {
+        relY = 0;
+    }
     m_viewDirection = glm::rotate(m_viewDirection, glm::radians(-relX * m_sensitivity), m_up);
+    m_viewDirection = glm::rotate(m_viewDirection, glm::radians(-relY * m_sensitivity), glm::cross(m_viewDirection, m_up));
 }
 
 void Camera::moveForward() {
