@@ -171,10 +171,9 @@ int main() {
 
     double fps_avg = 0;
     for (double fps : fps_acc) {
-        fps_avg += fps/(double)fps_acc.size();
+        fps_avg += (double)fps/(double)fps_acc.size();
     }
     std::cout << "Average fps: " << fps_avg << std::endl;
 
     return 0;
 }
-

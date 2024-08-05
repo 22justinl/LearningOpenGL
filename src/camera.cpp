@@ -35,7 +35,7 @@ void Camera::setPerspectiveMode() {
 }
 
 void Camera::setOrthogonalMode() {
-    Camera::ProjectionMode ortho = {false, 0, 0, -4, 4, -4, 4, 0.1f, 10.f};
+    Camera::ProjectionMode ortho = {false, 0, 0, -4, 4, -(9.0/4.0), 9.0/4.0, 0.1f, 10.f};
     setProjectionMode(ortho);
 }
 
