@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-Camera::Camera(unsigned int w, unsigned int h): m_eye(0, 0, 0), m_viewDirection(0, 0, -1), m_up(0, 1, 0), m_screenWidth(w), m_screenHeight(h) {
+Camera::Camera(unsigned int w, unsigned int h): m_eye(0, 0, 0), m_up(0, 1, 0), m_viewDirection(0, 0, -1), m_screenWidth(w), m_screenHeight(h) {
     // Default
     ProjectionMode p = {true, glm::radians(45.f), (float)w/(float)h, 0, 0, 0, 0, 0.1f, 10.f};
     setProjectionMode(p);
