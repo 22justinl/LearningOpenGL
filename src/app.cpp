@@ -36,6 +36,7 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     SDL_SetRelativeMouseMode(true);
 
     m_inputManager = new InputManager();
+    m_renderer = new Renderer();
     Camera* c = new Camera(screenWidth(), screenHeight());
     setCamera(c);
 }
@@ -50,6 +51,10 @@ SDL_GLContext App::glcontext() const {
 
 InputManager* App::inputManager() const {
     return m_inputManager;
+}
+
+Renderer* App::renderer() const {
+    return m_renderer;
 }
 
 Camera* App::camera() const {

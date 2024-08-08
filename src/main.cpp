@@ -16,6 +16,7 @@
 
 #include "app.hpp"
 #include "camera.hpp"
+#include "renderer.hpp"
 #include "utils.hpp"
 
 void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fsspath) {
@@ -142,11 +143,9 @@ int main() {
 
     // Setup
     glBindVertexArray(vao);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-    glViewport(0, 0, app.screenWidth(), app.screenHeight());
-    glUseProgram(program);
+    app.renderer()->setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    app.renderer()->setProgram(program);
+    app.renderer()->setViewPort(0, 0, app.screenWidth(), app.screenHeight());
 
     // FPS Counter Init
     unsigned int frames = 0;
@@ -161,7 +160,7 @@ int main() {
         u_cameraViewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
         glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
 
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        app.renderer()->draw();
 
         glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
         SDL_GL_SwapWindow(app.window());
