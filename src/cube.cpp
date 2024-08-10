@@ -36,7 +36,17 @@ Cube::Cube() {
     m_vertexCount = m_vertexPositions.size()/3;
     m_indexCount = m_vertexIndices.size();
     m_model = glm::mat4(1.0f);
-    recalculateBufferData();
+    m_bufferData = std::vector<GLfloat>(m_vertexPositions.size()*2);
+
+    for (int i = 0; i < m_vertexCount; ++i) {
+        m_bufferData[i*m_attributesPerVertex + 0] = m_vertexPositions[i*3 + 0];
+        m_bufferData[i*m_attributesPerVertex + 1] = m_vertexPositions[i*3 + 1];
+        m_bufferData[i*m_attributesPerVertex + 2] = m_vertexPositions[i*3 + 2];
+
+        m_bufferData[i*m_attributesPerVertex + 3] = m_vertexColors[i*3 + 0];
+        m_bufferData[i*m_attributesPerVertex + 4] = m_vertexColors[i*3 + 1];
+        m_bufferData[i*m_attributesPerVertex + 5] = m_vertexColors[i*3 + 2];
+    }
 
     GLuint vertexCount = m_vertexIndices.size();
     glGenVertexArrays(1, &m_vao);
@@ -59,8 +69,8 @@ Cube::Cube() {
     glDisableVertexAttribArray(1);
 }
 
-glm::mat4 Cube::model() {
-    return m_model;
+glm::mat4* Cube::model() {
+    return &m_model;
 }
 
 void Cube::leftMultMatrix(glm::mat4 transformation) {
@@ -76,6 +86,14 @@ void Cube::draw() {
     glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 }
 
+GLuint Cube::vao() {
+    return m_vao;
+}
+
+GLuint Cube::vbo() {
+    return m_vbo;
+}
+
 void Cube::recalculateBufferData() {
     m_bufferData = std::vector<GLfloat>(m_vertexPositions.size()*2);
 
@@ -88,5 +106,7 @@ void Cube::recalculateBufferData() {
         m_bufferData[i*m_attributesPerVertex + 4] = m_vertexColors[i*3 + 1];
         m_bufferData[i*m_attributesPerVertex + 5] = m_vertexColors[i*3 + 2];
     }
+
+    glNamedBufferSubData(m_vbo, 0, m_bufferData.size() * sizeof(GLfloat), m_bufferData.data());
 }
 

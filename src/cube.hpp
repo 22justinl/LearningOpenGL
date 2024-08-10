@@ -9,10 +9,12 @@ class Cube {
 public:
     Cube();
 
-    glm::mat4 model();
+    glm::mat4* model();
     void leftMultMatrix(glm::mat4 transformation);
-    
     void draw();
+
+    GLuint vao();
+    GLuint vbo();
 private:
     void recalculateBufferData();
 
