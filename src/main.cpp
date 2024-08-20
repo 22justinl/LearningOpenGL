@@ -23,7 +23,7 @@
 int main() {
     App app;
 
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 5; ++i) {
         Cube* object = app.objectManager()->createCube();
         object->leftMultMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, i, i)));
     }

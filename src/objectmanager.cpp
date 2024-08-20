@@ -4,8 +4,16 @@ ObjectManager::ObjectManager() {
 
 }
 
-std::vector<Cube*>& ObjectManager::objects() {
+std::vector<Object*>& ObjectManager::objects() {
     return m_objects;
+}
+
+Object* ObjectManager::createObject(std::vector<GLfloat> vertexPositions, 
+                                    std::vector<GLfloat> vertexColors, 
+                                    std::vector<GLuint> vertexIndices) {
+    Object* obj = new Object(vertexPositions, vertexColors, vertexIndices);
+    objects().push_back(obj);
+    return obj;
 }
 
 Cube* ObjectManager::createCube() {
