@@ -2,6 +2,7 @@
 
 #include "object.hpp"
 #include "cube.hpp"
+#include "plane.hpp"
 
 #include <vector>
 
@@ -14,6 +15,7 @@ public:
                          std::vector<GLfloat> vertexColors, 
                          std::vector<GLuint> vertexIndices);
     Cube* createCube();
+    Plane* createPlane();
 private:
     std::vector<Object*> m_objects;
 };

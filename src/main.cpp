@@ -23,10 +23,16 @@
 int main() {
     App app;
 
+    // Objects
     for (int i = 0; i < 5; ++i) {
         Cube* object = app.objectManager()->createCube();
         object->leftMultMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, i, i)));
     }
+    Plane* p = app.objectManager()->createPlane();
+    glm::mat4 planeTransformations = glm::mat4(1.0f);
+    planeTransformations = glm::translate(planeTransformations, glm::vec3(-5, -1, -5));
+    planeTransformations = glm::scale(planeTransformations, glm::vec3(10, 10, 10));
+    p->leftMultMatrix(planeTransformations);
 
     // Renderer
     Renderer renderer(app.objectManager());

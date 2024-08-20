@@ -31,7 +31,7 @@ private:
     glm::mat4 m_model;
     std::vector<GLfloat> m_vertexPositions;
     std::vector<GLfloat> m_vertexColors;
-    std::vector<GLint> m_vertexIndices;
+    std::vector<GLuint> m_vertexIndices;
 
     std::vector<GLfloat> m_bufferData;
 

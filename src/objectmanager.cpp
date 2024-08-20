@@ -21,3 +21,9 @@ Cube* ObjectManager::createCube() {
     objects().push_back(cube);
     return cube;
 }
+
+Plane* ObjectManager::createPlane() {
+    Plane* plane = new Plane();
+    objects().push_back(plane);
+    return plane;
+}

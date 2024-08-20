@@ -2,36 +2,10 @@
 
 Object::Object(std::vector<GLfloat> vertexPositions, 
                std::vector<GLfloat> vertexColors, 
-               std::vector<GLuint> vertexIndices) {
-    m_vertexPositions = {-0.5f   , -0.5f , -1.0f,
-                         0.5f    , -0.5f , -1.0f,
-                         0.5f    , 0.5f  , -1.0f,
-                         -0.5f   , 0.5f  , -1.0f,
-                         -0.5f   , -0.5f , -2.0f,
-                         0.5f    , -0.5f , -2.0f,
-                         0.5f    , 0.5f  , -2.0f,
-                         -0.5f   , 0.5f  , -2.0f};
-    m_vertexColors =    {1.0f    , 0.0f  , 0.0f,
-                         0.0f    , 1.0f  , 0.0f,
-                         0.0f    , 0.0f  , 1.0f,
-                         0.0f    , 0.0f  , 1.0f,
-                         1.0f    , 0.0f  , 0.0f,
-                         0.0f    , 1.0f  , 0.0f,
-                         0.0f    , 0.0f  , 1.0f,
-                         0.0f    , 0.0f  , 1.0f};
-    m_vertexIndices =   {0, 1, 3,
-                         1, 2, 3,
-                         1, 2, 5,
-                         5, 6, 2,
-                         3, 2, 7,
-                         2, 6, 7,
-                         2, 6, 7,
-                         0, 1, 4,
-                         1, 5, 4,
-                         5, 4, 6,
-                         4, 6, 7,
-                         4, 0, 7,
-                         0, 7, 3};
+               std::vector<GLuint> vertexIndices): m_vertexPositions(vertexPositions),
+                                                   m_vertexColors(vertexColors), 
+                                                   m_vertexIndices(vertexIndices) {
+
     m_attributesPerVertex = 6;
     m_vertexCount = m_vertexPositions.size()/3;
     m_indexCount = m_vertexIndices.size();
