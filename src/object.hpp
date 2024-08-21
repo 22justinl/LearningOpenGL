@@ -1,9 +1,12 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <vector>
+
+#define GRAVITY -9.81
 
 class Object {
 public:
@@ -11,12 +14,29 @@ public:
            std::vector<GLfloat> vertexColors, 
            std::vector<GLuint> vertexIndices);
 
-    glm::mat4* model();
+    glm::mat4* const model();
+    // Remove later (replace with specific transformation functions?)
     void leftMultMatrix(glm::mat4 transformation);
     void draw();
 
-    GLuint vao();
-    GLuint vbo();
+    GLuint vao() const;
+    GLuint vbo() const;
+
+    // Object Properties
+    glm::vec3 position() const;
+    void setPosition(glm::vec3 pos);
+    glm::vec3 velocity() const;
+    void setVelocity(glm::vec3 vel);
+    glm::vec3 acceleration() const;
+    void setAcceleration(glm::vec3 acc);
+
+    glm::vec3 scale() const;
+    void setScale(glm::vec3 scale);
+
+
+    bool isGravityOn() const;
+    void setGravity(bool b);
+
 private:
     void recalculateBufferData();
 
@@ -38,5 +58,14 @@ private:
     // When vertex data is changed set to true
     // Recalculate m_bufferData before draw
     // Removes unneccessary bufferData calculations
-    bool m_vertexDataChanged;
+    bool m_vertexDataChanged = false;
+    bool m_modelChanged = false;
+
+    // Physics Properties
+    glm::vec3 m_position = {0,0,0};
+    glm::vec3 m_velocity = {0,0,0};
+    glm::vec3 m_acceleration = {0,0,0};
+    glm::vec3 m_scale = {1,1,1};
+
+    bool m_gravity = false;
 };

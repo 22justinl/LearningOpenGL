@@ -43,7 +43,12 @@ Object::Object(std::vector<GLfloat> vertexPositions,
     glDisableVertexAttribArray(1);
 }
 
-glm::mat4* Object::model() {
+glm::mat4* const Object::model() {
+    if (m_modelChanged) {
+        m_model = glm::translate(glm::mat4(1), position()) * glm::scale(glm::mat4(1), scale());
+        // m_model = glm::rotate... * glm::scale... * glm::translate(glm::mat4(1), position());
+        m_modelChanged = false;
+    }
     return &m_model;
 }
 
@@ -60,11 +65,11 @@ void Object::draw() {
     glDrawElements(GL_TRIANGLES, m_indexCount, GL_UNSIGNED_INT, 0);
 }
 
-GLuint Object::vao() {
+GLuint Object::vao() const {
     return m_vao;
 }
 
-GLuint Object::vbo() {
+GLuint Object::vbo() const {
     return m_vbo;
 }
 
@@ -84,3 +89,53 @@ void Object::recalculateBufferData() {
     glNamedBufferSubData(m_vbo, 0, m_bufferData.size() * sizeof(GLfloat), m_bufferData.data());
 }
 
+glm::vec3 Object::position() const {
+    return m_position;
+}
+
+void Object::setPosition(glm::vec3 pos) {
+    if (pos == m_position) {
+        return;
+    }
+    m_modelChanged = true;
+    m_position = pos;
+}
+
+glm::vec3 Object::velocity() const {
+    return m_velocity;
+}
+
+void Object::setVelocity(glm::vec3 vel) {
+    m_velocity = vel;
+}
+
+glm::vec3 Object::acceleration() const {
+    return m_acceleration;
+}
+
+void Object::setAcceleration(glm::vec3 acc) {
+    m_acceleration = acc;
+}
+
+glm::vec3 Object::scale() const {
+    return m_scale;
+}
+
+void Object::setScale(glm::vec3 scale) {
+    if (scale == m_scale) {
+        return;
+    }
+    m_modelChanged = true;
+    m_scale = scale;
+}
+
+
+bool Object::isGravityOn() const {
+    return m_gravity;
+}
+
+void Object::setGravity(bool b) {
+    m_gravity = b;
+    glm::vec3 acc = acceleration() + glm::vec3(0.0f, GRAVITY, 0.0f);
+    setAcceleration(acc);
+}

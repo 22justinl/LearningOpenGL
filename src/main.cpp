@@ -16,6 +16,7 @@
 
 #include "app.hpp"
 #include "renderer.hpp"
+#include "physics.hpp"
 #include "utils.hpp"
 
 
@@ -26,18 +27,19 @@ int main() {
     // Objects
     for (int i = 0; i < 5; ++i) {
         Cube* object = app.objectManager()->createCube();
-        object->leftMultMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, i, i)));
+        object->setPosition(glm::vec3(i, i, i));
+        object->setGravity(true);
     }
     Plane* p = app.objectManager()->createPlane();
-    glm::mat4 planeTransformations = glm::mat4(1.0f);
-    planeTransformations = glm::translate(planeTransformations, glm::vec3(-5, -1, -5));
-    planeTransformations = glm::scale(planeTransformations, glm::vec3(10, 10, 10));
-    p->leftMultMatrix(planeTransformations);
+    p->setPosition(glm::vec3(-5, -1, -5));
+    p->setScale(glm::vec3(10, 10, 10));
 
     // Renderer
     Renderer renderer(app.objectManager());
     renderer.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     renderer.setViewPort(0, 0, app.screenWidth(), app.screenHeight());
+
+    Physics physics(app.objectManager());
 
     // Uniform copy
     glm::mat4 viewMatrix;
@@ -47,10 +49,17 @@ int main() {
     std::vector<double> fps_acc;
     auto startTime = std::chrono::steady_clock::now();
 
+    auto currTime = std::chrono::steady_clock::now();
+    auto prevTime = std::chrono::steady_clock::now();
     // Main loop
     bool quit = false;
     while (!quit) {
         fps_counter(frames, startTime, fps_acc);
+
+        currTime = std::chrono::steady_clock::now();
+        physics.incrementTimeStep(currTime - prevTime);
+        prevTime = currTime;
+
 
         // Camera uniform
         viewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
@@ -61,6 +70,7 @@ int main() {
         SDL_GL_SwapWindow(app.window());
 
         quit = app.inputManager()->handleEvents();
+
     }
 
     double fps_avg = 0;
