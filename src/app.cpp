@@ -30,15 +30,14 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
+    
     // SDL_GL_SetSwapInterval(1);
 
     SDL_SetRelativeMouseMode(true);
 
     m_inputManager = new InputManager();
-    m_renderer = new Renderer();
-    Camera* c = new Camera(screenWidth(), screenHeight());
-    setCamera(c);
+    m_objectManager = new ObjectManager();
+    setCamera(new Camera(screenWidth(), screenHeight()));
 }
 
 SDL_Window* App::window() const {
@@ -53,8 +52,8 @@ InputManager* App::inputManager() const {
     return m_inputManager;
 }
 
-Renderer* App::renderer() const {
-    return m_renderer;
+ObjectManager* App::objectManager() const {
+    return m_objectManager;
 }
 
 Camera* App::camera() const {
@@ -76,6 +75,11 @@ unsigned int App::screenHeight() const {
 
 void App::exitApp() {
     std::cout << "Bye!" << std::endl;
+
+    delete m_inputManager;
+    delete m_objectManager;
+    delete m_camera;
+
     SDL_GL_DeleteContext(glcontext());
     SDL_DestroyWindow(m_window);
 
@@ -84,7 +88,5 @@ void App::exitApp() {
 }
 
 App::~App() {
-    delete m_inputManager;
-    delete m_camera;
     exitApp();
 }

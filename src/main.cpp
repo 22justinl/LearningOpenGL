@@ -15,157 +15,61 @@
 #include <iostream>
 
 #include "app.hpp"
-#include "camera.hpp"
 #include "renderer.hpp"
+#include "physics.hpp"
 #include "utils.hpp"
 
-void CreateGraphicsPipeline(GLuint& program, std::string vsspath, std::string fsspath) {
-    program = glCreateProgram();
-    std::string vertexshadersource = LoadShaderFromFile(vsspath);
-    std::string fragmentshadersource = LoadShaderFromFile(fsspath);
-
-    const char* vertexshadersrc = vertexshadersource.c_str();
-    const char* fragmentshadersrc = fragmentshadersource.c_str();
-
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexshadersrc, nullptr);
-    glCompileShader(vertexShader);
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentshadersrc, nullptr);
-    glCompileShader(fragmentShader);
-
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-
-    glValidateProgram(program);
-}
 
 // NOTE: RIGHT HANDED COORDS (+x right, +y up, -z into screen)
 int main() {
     App app;
 
-    // setup cube
-    std::vector<GLfloat> cubeVertexPos =     {-0.5f   , -0.5f , -1.0f,
-                                                0.5f    , -0.5f , -1.0f,
-                                                0.5f    , 0.5f  , -1.0f,
-                                                -0.5f   , 0.5f  , -1.0f,
-                                                -0.5f   , -0.5f , -2.0f,
-                                                0.5f    , -0.5f , -2.0f,
-                                                0.5f    , 0.5f  , -2.0f,
-                                                -0.5f   , 0.5f  , -2.0f};
-
-    std::vector<GLfloat> cubeVertexCol =     {1.0f    , 0.0f  , 0.0f,
-                                                0.0f    , 1.0f  , 0.0f,
-                                                0.0f    , 0.0f  , 1.0f,
-                                                0.0f    , 0.0f  , 1.0f,
-                                                1.0f    , 0.0f  , 0.0f,
-                                                0.0f    , 1.0f  , 0.0f,
-                                                0.0f    , 0.0f  , 1.0f,
-                                                0.0f    , 0.0f  , 1.0f};
-
-    std::vector<GLfloat> cubeVertexPosCol =  {-0.5f   , -0.5f , -1.0f,
-                                                1.0f    , 0.0f  , 0.0f,
-
-                                                0.5f    , -0.5f , -1.0f,
-                                                0.0f    , 1.0f  , 0.0f,
-
-                                                0.5f    , 0.5f  , -1.0f,
-                                                0.0f    , 0.0f  , 1.0f,
-
-                                                -0.5f   , 0.5f  , -1.0f,
-                                                0.0f    , 0.0f  , 1.0f,
-
-                                                -0.5f   , -0.5f , -2.0f,
-                                                1.0f    , 0.0f  , 0.0f,
-
-                                                0.5f    , -0.5f , -2.0f,
-                                                0.0f    , 1.0f  , 0.0f,
-
-                                                0.5f    , 0.5f  , -2.0f,
-                                                0.0f    , 0.0f  , 1.0f,
-
-                                                -0.5f   , 0.5f  , -2.0f,
-                                                0.0f    , 0.0f  , 1.0f};
-
-    std::vector<GLuint> cubeVertexIndices =  {0, 1, 3,
-                                                1, 2, 3,
-                                                1, 2, 5,
-                                                5, 6, 2,
-                                                3, 2, 7,
-                                                2, 6, 7,
-                                                2, 6, 7,
-                                                0, 1, 4,
-                                                1, 5, 4,
-                                                5, 4, 6,
-                                                4, 6, 7,
-                                                4, 0, 7,
-                                                0, 7, 3};
-    
-    GLuint cubeVertexCount = cubeVertexIndices.size();
-
-    GLuint vao;
-    GLuint vbo;
-    GLuint ibo;
-
-    // Vertex Array Object
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    // Vertex Buffer Object
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, cubeVertexPosCol.size() * sizeof(GLfloat), cubeVertexPosCol.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, cubeVertexIndices.size() * sizeof(GLuint), cubeVertexIndices.data(), GL_STATIC_DRAW);
-
-    glBindVertexArray(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-
-    // TODO: New class?
-    GLuint program;
-    CreateGraphicsPipeline(program, "shaders/vertexshader.glsl", "shaders/fragshader.glsl");
-
-    // Uniforms
-    glm::mat4 u_cameraViewMatrix;
-    GLuint u_cameraViewMatrixLoc = glGetUniformLocation(program, "u_cameraViewMatrix");
-    if (u_cameraViewMatrixLoc < 0) {
-        std::cout << "u_cameraViewMatrix location not found" << std::endl;
+    // Objects
+    for (int i = 0; i < 5; ++i) {
+        Cube* object = app.objectManager()->createCube();
+        object->setPosition(glm::vec3(i, i, i));
+        object->setGravity(true);
     }
+    Plane* p = app.objectManager()->createPlane();
+    p->setPosition(glm::vec3(-5, -1, -5));
+    p->setScale(glm::vec3(10, 10, 10));
 
-    // Setup
-    glBindVertexArray(vao);
-    app.renderer()->setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    app.renderer()->setProgram(program);
-    app.renderer()->setViewPort(0, 0, app.screenWidth(), app.screenHeight());
+    // Renderer
+    Renderer renderer(app.objectManager());
+    renderer.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    renderer.setViewPort(0, 0, app.screenWidth(), app.screenHeight());
+
+    Physics physics(app.objectManager());
+
+    // Uniform copy
+    glm::mat4 viewMatrix;
 
     // FPS Counter Init
     unsigned int frames = 0;
     std::vector<double> fps_acc;
     auto startTime = std::chrono::steady_clock::now();
 
+    auto currTime = std::chrono::steady_clock::now();
+    auto prevTime = std::chrono::steady_clock::now();
     // Main loop
     bool quit = false;
     while (!quit) {
         fps_counter(frames, startTime, fps_acc);
 
-        u_cameraViewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
-        glUniformMatrix4fv(u_cameraViewMatrixLoc, 1, GL_FALSE, &u_cameraViewMatrix[0][0]);
+        currTime = std::chrono::steady_clock::now();
+        physics.incrementTimeStep(currTime - prevTime);
+        prevTime = currTime;
 
-        app.renderer()->draw();
+        // Camera uniform
+        viewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
+        renderer.setCameraViewUniform(&viewMatrix);
 
-        glDrawElements(GL_TRIANGLES, cubeVertexCount, GL_UNSIGNED_INT, 0);
+        renderer.draw();
+
         SDL_GL_SwapWindow(app.window());
 
         quit = app.inputManager()->handleEvents();
+
     }
 
     double fps_avg = 0;

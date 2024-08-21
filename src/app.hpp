@@ -6,7 +6,7 @@
 
 #include "camera.hpp"
 #include "inputmanager.hpp"
-#include "renderer.hpp"
+#include "objectmanager.hpp"
 
 class App {
 public:
@@ -16,8 +16,7 @@ public:
     SDL_GLContext glcontext() const;
 
     InputManager* inputManager() const;
-
-    Renderer* renderer() const;
+    ObjectManager* objectManager() const;
 
     Camera* camera() const;
     void setCamera(Camera* c);
@@ -32,7 +31,7 @@ private:
     SDL_GLContext m_glcontext;
 
     InputManager* m_inputManager;
-    Renderer* m_renderer;
+    ObjectManager* m_objectManager;
 
     Camera* m_camera;
 

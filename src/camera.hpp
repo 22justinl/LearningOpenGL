@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 
+// inherit from Object?
 class Camera {
 public:
     Camera(unsigned int w, unsigned int h);
