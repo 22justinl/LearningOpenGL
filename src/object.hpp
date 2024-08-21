@@ -33,6 +33,8 @@ public:
     glm::vec3 scale() const;
     void setScale(glm::vec3 scale);
 
+    bool visible() const;
+    void setVisible(bool b);
 
     bool isGravityOn() const;
     void setGravity(bool b);
@@ -67,5 +69,6 @@ private:
     glm::vec3 m_acceleration = {0,0,0};
     glm::vec3 m_scale = {1,1,1};
 
+    bool m_visible = true;
     bool m_gravity = false;
 };

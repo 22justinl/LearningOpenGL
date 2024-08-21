@@ -60,7 +60,6 @@ int main() {
         physics.incrementTimeStep(currTime - prevTime);
         prevTime = currTime;
 
-
         // Camera uniform
         viewMatrix = app.camera()->projectionMatrix() * app.camera()->viewMatrix();
         renderer.setCameraViewUniform(&viewMatrix);

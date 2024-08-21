@@ -31,7 +31,7 @@ App::App(unsigned int w, unsigned int h): m_screenWidth(w), m_screenHeight(h) {
     std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     
-    SDL_GL_SetSwapInterval(1);
+    // SDL_GL_SetSwapInterval(1);
 
     SDL_SetRelativeMouseMode(true);
 

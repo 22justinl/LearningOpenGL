@@ -129,6 +129,13 @@ void Object::setScale(glm::vec3 scale) {
     m_scale = scale;
 }
 
+bool Object::visible() const {
+    return m_visible;
+}
+
+void Object::setVisible(bool b) {
+    m_visible = b;
+}
 
 bool Object::isGravityOn() const {
     return m_gravity;

@@ -69,6 +69,10 @@ void Renderer::setModelUniform(glm::mat4* modelMatrix) {
 void Renderer::draw() {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     for (auto* obj : m_objectManager->objects()) {
+        if (obj->visible()) {
+            continue;
+        }
+
         setModelUniform(obj->model());
         obj->draw();
     }

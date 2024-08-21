@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 
+// inherit from Object?
 class Camera {
 public:
     Camera(unsigned int w, unsigned int h);
@@ -53,5 +54,5 @@ private:
     unsigned int m_screenHeight;
 
     float m_sensitivity = 0.1;
-    float m_speed = 0.1;
+    float m_speed = 0.001;
 };
